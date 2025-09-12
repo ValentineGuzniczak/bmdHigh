@@ -22,3 +22,5 @@ Remotes:
 Depends: 
     R (>= 3.5)
 LazyData: true
+URL: https://github.com/ValentineGuzniczak/bmdHigh
+BugReports: https://github.com/ValentineGuzniczak/bmdHigh/issues
