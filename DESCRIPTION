@@ -1,0 +1,24 @@
+Package: bmdHigh
+Title: Benchmark dose estimation for high-throughput dose-response data
+Version: 0.0.0.9000
+Authors@R: 
+    person("Valentine", "Guzniczak", , "vg@plen.ku.dk", role = c("aut", "cre"))
+Description: Benchmark dose estimation for high-throughput dose-response data.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports:
+    ggplot2,
+    drc,
+    bmd,
+    plyr,
+    dplyr
+Suggests: 
+    rmarkdown,
+    testthat (>= 3.0.0)
+Remotes:
+    DoseResponse/bmd
+Depends: 
+    R (>= 3.5)
+LazyData: true
