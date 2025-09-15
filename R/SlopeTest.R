@@ -2,6 +2,9 @@
 #'
 #' Fits a simple linear regression and checks whether the slope is negative.
 #'
+#' This function is **internal** to the package and is used by
+#' \code{\link{bmdHigh}}.
+#'
 #' @param data A data frame containing the response and dose variables.
 #' @param response_col Name of the response column in \code{data}.
 #' @param dose_col Name of the dose column in \code{data}.
@@ -9,11 +12,11 @@
 #' @importFrom stats coef lm as.formula
 #'
 #' @return Logical. \code{TRUE} if the slope is negative, otherwise \code{FALSE}.
-#' @export
+#' @keywords internal
 #'
 #' @examples
 #' df <- data.frame(Dose = c(1, 2, 3), responsevalue = c(10, 8, 5))
-#' negslopetest(data=df, response_col = "responsevalue", dose_col="Dose") # TRUE
+#' bmdHigh:::negslopetest(data=df, response_col = "responsevalue", dose_col="Dose") # TRUE
 #'
 negslopetest <- function(data, response_col, dose_col) {
   # Input validation

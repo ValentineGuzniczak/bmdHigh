@@ -2,20 +2,23 @@
 #'
 #' Classifies a vector into one of: "binary", "count", "continuous", or "categorical"; and returns a list of appropriate models.
 #'
+#' This function is **internal** to the package and is used by
+#' \code{\link{bmdHigh}}.
+#'
 #' @param x A vector (numeric, factor, or character) to classify.
 #'
 #' @return A character string indicating the data type. + list of drc models
 #'
 #' @importFrom drc LL.4 W1.4 W2.4 LN.4 LL.3 W1.3 W2.3 LN.3 LL.2 W1.2 W2.2 LN.2
 #'
-#' @export
+#' @keywords internal
 #'
 #' @examples
-#' classify_data(c(0, 1, 1, 0))
-#' classify_data(c(3, 5, 1999))
-#' classify_data(c(18.04, 8.04, 1.06, 4.01))
-#' classify_data(c("yes", "no", "yes"))
-#' classify_data(c("pink", "lightpink", "hotpink"))
+#' bmdHigh:::classify_data(c(0, 1, 1, 0))
+#' bmdHigh:::classify_data(c(3, 5, 1999))
+#' bmdHigh:::classify_data(c(18.04, 8.04, 1.06, 4.01))
+#' bmdHigh:::classify_data(c("yes", "no", "yes"))
+#' bmdHigh:::classify_data(c("pink", "lightpink", "hotpink"))
 #'
 classify_data <- function(x) {
   # Remove NAs safely

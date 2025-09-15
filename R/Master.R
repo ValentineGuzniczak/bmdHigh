@@ -3,6 +3,9 @@
 #' This function performs classification, monotonicity testing, trend testing,
 #' slope testing, model fitting, and plotting of model-averaged curve.
 #'
+#' This function is **internal** to the package and is used by
+#' \code{\link{bmdHigh}}.
+#'
 #' @param data A data frame containing dose-response data.
 #' @param dose_col Name of the column with dose values.
 #' @param response_col Name of the column with response values.
@@ -14,7 +17,9 @@
 #' @importFrom bmd trendTest
 #' @importFrom bmd MACurve
 #' @importFrom drc LL.4 W1.4 W2.4 LN.4
-#' @export
+#'
+#' @keywords internal
+#'
 master <- function(
     data,
     dose_col,
@@ -22,18 +27,7 @@ master <- function(
     factor_col,
     response_type_col
 ) {
-  # # --- Build required columns list dynamically --- #DELETE
-  # required_cols <- c(dose_col, response_col, response_type_col)
-  # if (!is.null(factor_col)) {
-  #   required_cols <- c(required_cols, factor_col)
-  # }
 
-  # # --- Validate that required columns exist --- #DELETE
-  # missing_cols <- setdiff(required_cols, colnames(data))
-  # if (length(missing_cols) > 0) {
-  #   stop("Missing required columns: ", paste(missing_cols, collapse = ", "))
-  # }
-  #
   # --- Extract required columns dynamically ---
   dose <- data[[dose_col]]
   x <- sort(unique(data[[dose_col]]))

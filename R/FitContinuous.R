@@ -1,6 +1,8 @@
 #' Fit Continuous Dose-Response Models
 #'
 #' Fits a set of continuous dose-response models using the \code{drc} package.
+#' This function is **internal** to the package and is used by
+#' \code{\link{bmdHigh}}.
 #'
 #' @param data A data frame containing the response and dose variables.
 #' @param response_col Name of the response column in \code{data}.
@@ -13,7 +15,7 @@
 #' @importFrom drc LL.4 W1.4 W2.4 LN.4 BC.5 BC.4
 #'
 #' @return A named list of fitted models. Models that fail return \code{NULL}.
-#' @export
+#' @keywords internal
 continuousfit <- function(data,
                           response_col = "responsevalue",
                           dose_col = "Dose",

@@ -21,3 +21,8 @@ master(data, dose_col, response_col, factor_col, response_type_col)
 This function performs classification, monotonicity testing, trend testing,
 slope testing, model fitting, and plotting of model-averaged curve.
 }
+\details{
+This function is \strong{internal} to the package and is used by
+\code{\link{bmdHigh}}.
+}
+\keyword{internal}

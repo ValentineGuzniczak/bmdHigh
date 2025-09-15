@@ -15,11 +15,16 @@ A character string indicating the data type. + list of drc models
 \description{
 Classifies a vector into one of: "binary", "count", "continuous", or "categorical"; and returns a list of appropriate models.
 }
+\details{
+This function is \strong{internal} to the package and is used by
+\code{\link{bmdHigh}}.
+}
 \examples{
-classify_data(c(0, 1, 1, 0))
-classify_data(c(3, 5, 1999))
-classify_data(c(18.04, 8.04, 1.06, 4.01))
-classify_data(c("yes", "no", "yes"))
-classify_data(c("pink", "lightpink", "hotpink"))
+bmdHigh:::classify_data(c(0, 1, 1, 0))
+bmdHigh:::classify_data(c(3, 5, 1999))
+bmdHigh:::classify_data(c(18.04, 8.04, 1.06, 4.01))
+bmdHigh:::classify_data(c("yes", "no", "yes"))
+bmdHigh:::classify_data(c("pink", "lightpink", "hotpink"))
 
 }
+\keyword{internal}

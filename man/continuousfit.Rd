@@ -28,4 +28,7 @@ A named list of fitted models. Models that fail return \code{NULL}.
 }
 \description{
 Fits a set of continuous dose-response models using the \code{drc} package.
+This function is \strong{internal} to the package and is used by
+\code{\link{bmdHigh}}.
 }
+\keyword{internal}
