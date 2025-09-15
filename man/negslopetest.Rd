@@ -4,7 +4,7 @@
 \alias{negslopetest}
 \title{Test for Negative Slope}
 \usage{
-negslopetest(data, response_col = "responsevalue", dose_col = "Dose")
+negslopetest(data, response_col, dose_col)
 }
 \arguments{
 \item{data}{A data frame containing the response and dose variables.}
@@ -21,6 +21,6 @@ Fits a simple linear regression and checks whether the slope is negative.
 }
 \examples{
 df <- data.frame(Dose = c(1, 2, 3), responsevalue = c(10, 8, 5))
-negslopetest(df) # TRUE
+negslopetest(data=df, response_col = "responsevalue", dose_col="Dose") # TRUE
 
 }

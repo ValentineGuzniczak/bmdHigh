@@ -4,29 +4,20 @@
 \alias{master}
 \title{Master Analysis Function}
 \usage{
-master(
-  data,
-  dose_col = "Dose",
-  response_col = "responsevalue",
-  factor_col = NULL,
-  response_type_col = "responsetype",
-  models = list(drc::LL.4(), drc::W1.4(), drc::W2.4(), drc::LN.4())
-)
+master(data, dose_col, response_col, factor_col, response_type_col)
 }
 \arguments{
 \item{data}{A data frame containing dose-response data.}
 
-\item{dose_col}{Name of the column with dose values. Default = "Dose".}
+\item{dose_col}{Name of the column with dose values.}
 
-\item{response_col}{Name of the column with response values. Default = "responsevalue".}
+\item{response_col}{Name of the column with response values.}
 
-\item{factor_col}{Optional name of the column with a grouping variable (e.g., treatment). Default = NULL.}
+\item{factor_col}{Optional name of the column with a grouping variable (e.g., treatment).}
 
-\item{response_type_col}{Name of the column describing response type. Default = "responsetype".}
-
-\item{models}{A list of model functions from \code{drc}. Default = list(LL.4(), W1.4(), W2.4(), LN.4()).}
+\item{response_type_col}{Name of the column describing response type.}
 }
 \description{
 This function performs classification, monotonicity testing, trend testing,
-slope testing, model fitting, and optionally plotting.
+slope testing, model fitting, and plotting of model-averaged curve.
 }

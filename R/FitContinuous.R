@@ -5,11 +5,12 @@
 #' @param data A data frame containing the response and dose variables.
 #' @param response_col Name of the response column in \code{data}.
 #' @param dose_col Name of the dose column in \code{data}.
-#' @param models A list of model functions from \code{drc} (e.g. LL.4(), W1.4(), BC.5()).
+#' @param models A list of model functions from \code{drc} (e.g. LL.4(), W1.4(), LN.4()).
 #' @param negslope Logical. If TRUE, adds the \code{BC.5()} model for negative slopes.
 #'
+#' @importFrom stats as.formula
 #' @importFrom drc drm
-#' @importFrom drc LL.4 W1.4 W2.4 LN.4 BC.5
+#' @importFrom drc LL.4 W1.4 W2.4 LN.4 BC.5 BC.4
 #'
 #' @return A named list of fitted models. Models that fail return \code{NULL}.
 #' @export

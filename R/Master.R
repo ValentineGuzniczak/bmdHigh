@@ -1,15 +1,15 @@
 #' Master Analysis Function
 #'
 #' This function performs classification, monotonicity testing, trend testing,
-#' slope testing, model fitting, and optionally plotting.
+#' slope testing, model fitting, and plotting of model-averaged curve.
 #'
 #' @param data A data frame containing dose-response data.
-#' @param dose_col Name of the column with dose values. Default = "Dose".
-#' @param response_col Name of the column with response values. Default = "responsevalue".
-#' @param factor_col Optional name of the column with a grouping variable (e.g., treatment). Default = NULL.
-#' @param response_type_col Name of the column describing response type. Default = "responsetype".
-#' @param models A list of model functions from \code{drc}. Default = list(LL.4(), W1.4(), W2.4(), LN.4()).
+#' @param dose_col Name of the column with dose values.
+#' @param response_col Name of the column with response values.
+#' @param factor_col Optional name of the column with a grouping variable (e.g., treatment).
+#' @param response_type_col Name of the column describing response type.
 #'
+#' @importFrom graphics curve
 #' @importFrom bmd monotonicityTest
 #' @importFrom bmd trendTest
 #' @importFrom bmd MACurve
@@ -17,32 +17,29 @@
 #' @export
 master <- function(
     data,
-    dose_col = "Dose",
-    response_col = "responsevalue",
-    factor_col = NULL,
-    response_type_col = "responsetype",
-    models = list(drc::LL.4(), drc::W1.4(), drc::W2.4(), drc::LN.4())
+    dose_col,
+    response_col,
+    factor_col,
+    response_type_col
 ) {
-  # --- Build required columns list dynamically ---
-  required_cols <- c(dose_col, response_col, response_type_col)
-  if (!is.null(factor_col)) {
-    required_cols <- c(required_cols, factor_col)
-  }
+  # # --- Build required columns list dynamically --- #DELETE
+  # required_cols <- c(dose_col, response_col, response_type_col)
+  # if (!is.null(factor_col)) {
+  #   required_cols <- c(required_cols, factor_col)
+  # }
 
-  # --- Validate that required columns exist ---
-  missing_cols <- setdiff(required_cols, colnames(data))
-  if (length(missing_cols) > 0) {
-    stop("Missing required columns: ", paste(missing_cols, collapse = ", "))
-  }
-
+  # # --- Validate that required columns exist --- #DELETE
+  # missing_cols <- setdiff(required_cols, colnames(data))
+  # if (length(missing_cols) > 0) {
+  #   stop("Missing required columns: ", paste(missing_cols, collapse = ", "))
+  # }
+  #
   # --- Extract required columns dynamically ---
   dose <- data[[dose_col]]
-  print("uniquedose")
-
   x <- sort(unique(data[[dose_col]]))
   response <- data[[response_col]]
   response_type <- data[[response_type_col]][[1]]
-  factor_val <- if (!is.null(factor_col)) data[[factor_col]][[1]] else NA
+  factor_val <- if (!is.null(factor_col)) data[[factor_col]][[1]] else NA #problem here maybe? with s alba example gives 1 or 2 for bentozane og glyphosate
 
   # --- Display processing info ---
   if (!is.null(factor_col)) {
@@ -52,7 +49,9 @@ master <- function(
   }
 
   # --- Classify response data type ---
-  datatype <- classify_data(response)
+  datainfo <- classify_data(response)
+  datatype <- datainfo$datatype
+  models <- datainfo$models
 
   # --- Monotonicity test ---
   mono <- try(
@@ -60,11 +59,11 @@ master <- function(
     silent = TRUE
   )
   if (inherits(mono, "try-error")) {
-    warning("Monotonicity test failed — skipping subset.")
+    warning("Monotonicity test failed - skipping subset.")
     return(NULL)
   }
   if (!isTRUE(mono$acceptMonotonicity)) {
-    cat("Non-monotonic response — analysis stopped.\n")
+    cat("Non-monotonic response - analysis stopped.\n")
     return(NULL)
   }
   cat("Monotonicity accepted.\n")
@@ -81,19 +80,19 @@ master <- function(
     silent = TRUE
   )
   if (inherits(trend, "try-error") || !isTRUE(trend$acceptTrend)) {
-    cat("No significant trend — analysis stopped.\n")
+    cat("No significant trend - analysis stopped.\n")
     return(NULL)
   }
   cat("Trend accepted.\n")
 
+  # --- Negative slope test ---
+  negslope <- negslopetest(data, response_col, dose_col)
+
   # --- Check data type ---
   if (datatype != "continuous") {
-    cat("Data is not continuous — skipping model fitting.\n")
+    cat("Data is not continuous - skipping model fitting.\n")
     return(NULL)
   }
-
-  # --- Negative slope test ---
-  negslope <- negslopetest(data)
 
   # --- Fit models using continuousfit() ---
   results <- continuousfit(
@@ -108,7 +107,7 @@ master <- function(
   results <- Filter(Negate(is.null), results)
 
   if (length(results) == 0) {
-    warning("No valid models for this subset — skipping plot.")
+    warning("No valid models for this subset - skipping plot.")
     return(NULL)
   }
 

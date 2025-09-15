@@ -19,7 +19,7 @@ continuousfit(
 
 \item{dose_col}{Name of the dose column in \code{data}.}
 
-\item{models}{A list of model functions from \code{drc} (e.g. LL.4(), W1.4(), BC.5()).}
+\item{models}{A list of model functions from \code{drc} (e.g. LL.4(), W1.4(), LN.4()).}
 
 \item{negslope}{Logical. If TRUE, adds the \code{BC.5()} model for negative slopes.}
 }

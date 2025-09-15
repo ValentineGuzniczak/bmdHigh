@@ -1,18 +1,21 @@
 #' Classify Data
 #'
-#' Classifies a vector into one of: "binary", "count", "continuous", or "categorical".
+#' Classifies a vector into one of: "binary", "count", "continuous", or "categorical"; and returns a list of appropriate models.
 #'
 #' @param x A vector (numeric, factor, or character) to classify.
 #'
-#' @return A character string indicating the data type.
+#' @return A character string indicating the data type. + list of drc models
+#'
+#' @importFrom drc LL.4 W1.4 W2.4 LN.4 LL.3 W1.3 W2.3 LN.3 LL.2 W1.2 W2.2 LN.2
+#'
 #' @export
 #'
 #' @examples
 #' classify_data(c(0, 1, 1, 0))
-#' classify_data(c(2, 5, 8, 10))
-#' classify_data(c(2.2, 5.5, 8.8, 10.1))
+#' classify_data(c(3, 5, 1999))
+#' classify_data(c(18.04, 8.04, 1.06, 4.01))
 #' classify_data(c("yes", "no", "yes"))
-#' classify_data(c("yellow", "green", "pink"))
+#' classify_data(c("pink", "lightpink", "hotpink"))
 #'
 classify_data <- function(x) {
   # Remove NAs safely
@@ -28,29 +31,56 @@ classify_data <- function(x) {
     unique_vals <- unique(x_no_na)
 
     # Binary: exactly two unique values (0/1, 1/2, TRUE/FALSE encoded numerically)
-    if (length(unique_vals) == 2 &&
-        all(unique_vals %in% c(0, 1, 1, 2))) {
-      return("binary")
+    if (length(unique(unique_vals)) == 2 &&
+        all(unique(unique_vals) %in% c(0, 1, 2))) {
+      models <- list(LL.2(), W1.2(), W2.2(), LN.2())
+      datatype <- "binary"
+      return(list(
+        datatype = datatype,
+        models = models
+      ))
     }
 
     # Counts: all non-negative integers
     if (all(x_no_na >= 0) && all(abs(x_no_na - round(x_no_na)) < .Machine$double.eps^0.5)) {
-      return("count")
+      models <- list(LL.3(), W1.3(), W2.3(), LN.3())
+      datatype <- "count"
+      return(list(
+        datatype = datatype,
+        models = models
+      ))
     }
 
     # Otherwise → continuous
-    return("continuous")
+    models <- list(LL.4(), W1.4(), W2.4(), LN.4())
+    datatype <- "continuous"
+    return(list(
+      datatype = datatype,
+      models = models
+    ))
   }
 
   # Factors & characters → categorical
   if (is.factor(x_no_na) || is.character(x_no_na)) {
     # If binary categorical (e.g., "Yes"/"No", "Male"/"Female")
     if (length(unique(x_no_na)) == 2) {
-      return("binary")
+      models <- list(LL.2(), W1.2(), W2.2(), LN.2())
+      datatype <- "binary"
+      return(list(
+        datatype = datatype,
+        models = models
+      ))
     }
     return("categorical")
+    models <- list(LL.3(), W1.3(), W2.3(), LN.3())
+    datatype <- "categorical"
+    return(list(
+      datatype = datatype,
+      models = models
+    ))
   }
 
   # Default fallback
   return(paste("unsupported data type:", class(x)))
 }
+

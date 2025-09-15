@@ -6,14 +6,16 @@
 #' @param response_col Name of the response column in \code{data}.
 #' @param dose_col Name of the dose column in \code{data}.
 #'
+#' @importFrom stats coef lm as.formula
+#'
 #' @return Logical. \code{TRUE} if the slope is negative, otherwise \code{FALSE}.
 #' @export
 #'
 #' @examples
 #' df <- data.frame(Dose = c(1, 2, 3), responsevalue = c(10, 8, 5))
-#' negslopetest(df) # TRUE
+#' negslopetest(data=df, response_col = "responsevalue", dose_col="Dose") # TRUE
 #'
-negslopetest <- function(data, response_col = "responsevalue", dose_col = "Dose") {
+negslopetest <- function(data, response_col, dose_col) {
   # Input validation
   if (!all(c(response_col, dose_col) %in% colnames(data))) {
     stop("Data must contain columns: ", response_col, " and ", dose_col)

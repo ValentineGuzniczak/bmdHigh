@@ -10,16 +10,16 @@ classify_data(x)
 \item{x}{A vector (numeric, factor, or character) to classify.}
 }
 \value{
-A character string indicating the data type.
+A character string indicating the data type. + list of drc models
 }
 \description{
-Classifies a vector into one of: "binary", "count", "continuous", or "categorical".
+Classifies a vector into one of: "binary", "count", "continuous", or "categorical"; and returns a list of appropriate models.
 }
 \examples{
 classify_data(c(0, 1, 1, 0))
-classify_data(c(2, 5, 8, 10))
-classify_data(c(2.2, 5.5, 8.8, 10.1))
+classify_data(c(3, 5, 1999))
+classify_data(c(18.04, 8.04, 1.06, 4.01))
 classify_data(c("yes", "no", "yes"))
-classify_data(c("yellow", "green", "pink"))
+classify_data(c("pink", "lightpink", "hotpink"))
 
 }
