@@ -12,6 +12,7 @@
 #' @param factor_col Optional name of the column with a grouping variable (e.g., treatment).
 #' @param response_type_col Name of the column describing response type.
 #'
+#' @importFrom grDevices recordPlot
 #' @importFrom graphics curve
 #' @importFrom bmd monotonicityTest
 #' @importFrom bmd trendTest
@@ -33,7 +34,7 @@ master <- function(
   x <- sort(unique(data[[dose_col]]))
   response <- data[[response_col]]
   response_type <- data[[response_type_col]][[1]]
-  factor_val <- if (!is.null(factor_col)) data[[factor_col]][[1]] else NA #problem here maybe? with s alba example gives 1 or 2 for bentozane og glyphosate
+  factor_val <- if (!is.null(factor_col)) as.character(data[[factor_col]][1]) else NA
 
   # --- Display processing info ---
   if (!is.null(factor_col)) {
@@ -132,6 +133,10 @@ master <- function(
  # )
 
 
-  # --- Return fitted models ---
-  return(results)
+    # Capture the plot
+    pl <- recordPlot()
+
+    # Return both models and plot
+    return(list(models = results, plot = pl))
+
 }

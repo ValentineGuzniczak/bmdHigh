@@ -33,11 +33,12 @@ This function checks that all required columns are present. Then, for each endpo
 monotonicity testing, trend testing, slope testing, model fitting, and plotting of model-averaged curve.
 }
 \examples{
-\dontrun{
-# Example using dataset from drcData
+
+# Example using S.alba.comp dataset from drcData
 library(drcData)
 data("S.alba.comp")
 
+# The dataset must in long format
 library(tidyr)
 S_alba_long <- S.alba.comp \%>\%
   pivot_longer(
@@ -54,6 +55,8 @@ results <- bmdHigh(
   response_type_col = "responsetype",
   factor_col        = "herbicide"
 )
-}
+
+
+
 
 }

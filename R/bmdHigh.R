@@ -24,11 +24,12 @@
 #' @export
 #'
 #'@examples
-#' \dontrun{
-#' # Example using dataset from drcData
+#'
+#' # Example using S.alba.comp dataset from drcData
 #' library(drcData)
 #' data("S.alba.comp")
 #'
+#' # The dataset must in long format
 #' library(tidyr)
 #' S_alba_long <- S.alba.comp %>%
 #'   pivot_longer(
@@ -45,7 +46,9 @@
 #'   response_type_col = "responsetype",
 #'   factor_col        = "herbicide"
 #' )
-#' }
+#'
+#'
+#'
 #'
 bmdHigh <- function(data,
                     dose_col,
