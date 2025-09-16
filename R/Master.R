@@ -3,20 +3,18 @@
 #' This function performs classification, monotonicity testing, trend testing,
 #' slope testing, model fitting, and plotting of model-averaged curve.
 #'
-#' This function is **internal** to the package and is used by
-#' \code{\link{bmdHigh}}.
+#' Internal function used by \code{\link{bmdHigh}}.
 #'
 #' @param data A data frame containing dose-response data.
 #' @param dose_col Name of the column with dose values.
 #' @param response_col Name of the column with response values.
-#' @param factor_col Optional name of the column with a grouping variable (e.g., treatment).
+#' @param factor1_col Optional name of the first grouping variable.
+#' @param factor2_col Optional name of the second grouping variable.
 #' @param response_type_col Name of the column describing response type.
 #'
 #' @importFrom grDevices recordPlot
 #' @importFrom graphics curve
-#' @importFrom bmd monotonicityTest
-#' @importFrom bmd trendTest
-#' @importFrom bmd MACurve
+#' @importFrom bmd monotonicityTest trendTest MACurve
 #' @importFrom drc LL.4 W1.4 W2.4 LN.4
 #'
 #' @keywords internal
@@ -25,34 +23,33 @@ master <- function(
     data,
     dose_col,
     response_col,
-    factor_col,
+    factor1_col = NULL,
+    factor2_col = NULL,
     response_type_col
 ) {
-
-  # --- Extract required columns dynamically ---
-  dose <- data[[dose_col]]
-  x <- sort(unique(data[[dose_col]]))
-  response <- data[[response_col]]
+  # --- Extract columns ---
+  dose          <- data[[dose_col]]
+  x             <- sort(unique(dose))
+  response      <- data[[response_col]]
   response_type <- data[[response_type_col]][[1]]
-  factor_val <- if (!is.null(factor_col)) as.character(data[[factor_col]][1]) else NA
+
+  # Values of the optional factors (as characters so factors print nicely)
+  factor1_val <- if (!is.null(factor1_col)) as.character(data[[factor1_col]][1]) else NULL
+  factor2_val <- if (!is.null(factor2_col)) as.character(data[[factor2_col]][1]) else NULL
 
   # --- Display processing info ---
-  if (!is.null(factor_col)) {
-    cat("\n--- Processing:", response_type, "-", factor_val, "---\n")
-  } else {
-    cat("\n--- Processing:", response_type, "---\n")
-  }
+  parts <- c(response_type)
+  if (!is.null(factor1_col)) parts <- c(paste0(factor1_col, ": ", factor1_val), parts)
+  if (!is.null(factor2_col)) parts <- c(paste0(factor2_col, ": ", factor2_val), parts)
+  cat("\n--- Processing:", paste(parts, collapse = " - "), "---\n")
 
-  # --- Classify response data type ---
+  # --- Classify response type ---
   datainfo <- classify_data(response)
   datatype <- datainfo$datatype
-  models <- datainfo$models
+  models   <- datainfo$models
 
   # --- Monotonicity test ---
-  mono <- try(
-    bmd::monotonicityTest(dose, response, test = "jonckheere"),
-    silent = TRUE
-  )
+  mono <- try(bmd::monotonicityTest(dose, response, test = "jonckheere"), silent = TRUE)
   if (inherits(mono, "try-error")) {
     warning("Monotonicity test failed - skipping subset.")
     return(NULL)
@@ -65,13 +62,11 @@ master <- function(
 
   # --- Trend test ---
   trend <- try(
-    bmd::trendTest(
-      data = data,
-      x = dose_col,
-      y = response_col,
-      test = "tukey",
-      level = 0.05
-    ),
+    bmd::trendTest(data = data,
+                   x    = dose_col,
+                   y    = response_col,
+                   test = "tukey",
+                   level = 0.05),
     silent = TRUE
   )
   if (inherits(trend, "try-error") || !isTRUE(trend$acceptTrend)) {
@@ -83,60 +78,56 @@ master <- function(
   # --- Negative slope test ---
   negslope <- negslopetest(data, response_col, dose_col)
 
-  # --- Check data type ---
   if (datatype != "continuous") {
     cat("Data is not continuous - skipping model fitting.\n")
     return(NULL)
   }
 
-  # --- Fit models using continuousfit() ---
+  # --- Fit models ---
   results <- continuousfit(
-    data = data,
+    data         = data,
     response_col = response_col,
-    dose_col = dose_col,
-    models = models,
-    negslope = negslope
+    dose_col     = dose_col,
+    models       = models,
+    negslope     = negslope
   )
-
-  # Remove failed models
   results <- Filter(Negate(is.null), results)
-
   if (length(results) == 0) {
     warning("No valid models for this subset - skipping plot.")
     return(NULL)
   }
 
-  # --- Plotting (sticks close to your original code) ---
+  # --- Build the plot title with real column names ---
+  title_parts <- c()
+  if (!is.null(factor1_col))
+    title_parts <- c(title_parts,
+                     paste0(factor1_col, ": ",
+                            results[[1]]$origData[[factor1_col]][[1]]), " | ")
+  if (!is.null(factor2_col))
+    title_parts <- c(title_parts,
+                     paste0(factor2_col, ": ",
+                            results[[1]]$origData[[factor2_col]][[1]]), " | ")
+  title_parts <- c(title_parts,
+                   paste0("Response: ",
+                          results[[1]]$origData[[response_type_col]][[1]]))
+  plot_title <- paste(title_parts, collapse = " ")
+
+  # --- Plotting ---
   try(
     plot(
       results[[1]],
       type = "obs",
-      main = paste0(
-        if (!is.null(factor_col)) {
-          paste0("Factor: ", results[[1]]$origData[[factor_col]][[1]], " | ")
-        } else {
-          ""
-        },
-        "Response: ", results[[1]]$origData[[response_type_col]][[1]]
-      )
+      main = plot_title
     ),
     silent = TRUE
   )
 
   # --- Model averaging curve ---
- # try(
-    curve(MACurve(x, results, "AIC"),
-      add  = TRUE,
-      col  = "hotpink"
-    )#,
-   # silent = TRUE
- # )
-
-
-    # Capture the plot
-    pl <- recordPlot()
-
-    # Return both models and plot
-    return(list(models = results, plot = pl))
-
+  try(
+    curve(MACurve(x, results, "AIC"), add = TRUE, col = "hotpink"),
+    silent = TRUE
+  )
+  # --- Record and return plot---
+  pl <- recordPlot()
+  list(models = results, plot = pl)
 }

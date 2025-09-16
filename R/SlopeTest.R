@@ -14,10 +14,7 @@
 #' @return Logical. \code{TRUE} if the slope is negative, otherwise \code{FALSE}.
 #' @keywords internal
 #'
-#' @examples
-#' df <- data.frame(Dose = c(1, 2, 3), responsevalue = c(10, 8, 5))
-#' bmdHigh:::negslopetest(data=df, response_col = "responsevalue", dose_col="Dose") # TRUE
-#'
+#
 negslopetest <- function(data, response_col, dose_col) {
   # Input validation
   if (!all(c(response_col, dose_col) %in% colnames(data))) {
@@ -36,10 +33,10 @@ negslopetest <- function(data, response_col, dose_col) {
     return(NA)
   }
 
-  # Extract slope safely
+  # Extract slope
   slope <- coef(lmtest)[dose_col]
 
-  # Handle NA slope gracefully
+  # Handle NA slope
   if (is.na(slope)) {
     warning("Slope could not be estimated. Returning NA.")
     return(NA)

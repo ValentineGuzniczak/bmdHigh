@@ -4,29 +4,39 @@
 \alias{bmdHigh}
 \title{Benchmark dose estimation for high-throughput dose-response data}
 \usage{
-bmdHigh(data, dose_col, response_type_col, response_col, factor_col = NULL)
+bmdHigh(
+  data,
+  dose_col,
+  response_type_col,
+  response_col,
+  factor1_col = NULL,
+  factor2_col = NULL
+)
 }
 \arguments{
-\item{data}{A data frame containing the dose–response data. Must be long format.}
+\item{data}{A data frame in long format.}
 
 \item{dose_col}{Character string giving the name of the dose column.}
 
 \item{response_type_col}{Character string giving the name of the
 endpoint/response-type column.}
 
-\item{response_col}{Character string giving the name of the response
-value column.}
+\item{response_col}{Character string giving the name of the response value column.}
 
-\item{factor_col}{Optional character string giving the name of a
-grouping variable (e.g. species, treatment, etc.). If \code{NULL},
-the data are split only by \code{response_type_col}.}
+\item{factor1_col}{Optional character string giving the name of the first
+grouping variable (e.g., treatment).}
+
+\item{factor2_col}{Optional character string giving the name of the second
+grouping variable (e.g., species).}
 }
 \value{
 A list (one element per unique combination of
-\code{response_type_col} and \code{factor_col}) of model fits. #VALENTINE: return graph and/or bmdMA() value
+\code{response_type_col}, \code{factor1_col}, and \code{factor2_col})
+of model fits and a graph with the model-averaged curve.
 }
 \description{
-Pre-processing, dose-response model fitting, model averaging, and benchmark dose estimation for high-throughput dose-response data.
+Pre-processing, dose-response model fitting, model averaging, and benchmark
+dose estimation for high-throughput dose-response data.
 }
 \details{
 This function checks that all required columns are present. Then, for each endpoint-factor combination, it performs classification,
@@ -53,9 +63,8 @@ results <- bmdHigh(
   dose_col          = "dose",
   response_col      = "responsevalue",
   response_type_col = "responsetype",
-  factor_col        = "herbicide"
+  factor1_col        = "herbicide"
 )
-
 
 
 

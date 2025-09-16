@@ -4,7 +4,14 @@
 \alias{master}
 \title{Master Analysis Function}
 \usage{
-master(data, dose_col, response_col, factor_col, response_type_col)
+master(
+  data,
+  dose_col,
+  response_col,
+  factor1_col = NULL,
+  factor2_col = NULL,
+  response_type_col
+)
 }
 \arguments{
 \item{data}{A data frame containing dose-response data.}
@@ -13,7 +20,9 @@ master(data, dose_col, response_col, factor_col, response_type_col)
 
 \item{response_col}{Name of the column with response values.}
 
-\item{factor_col}{Optional name of the column with a grouping variable (e.g., treatment).}
+\item{factor1_col}{Optional name of the first grouping variable.}
+
+\item{factor2_col}{Optional name of the second grouping variable.}
 
 \item{response_type_col}{Name of the column describing response type.}
 }
@@ -22,7 +31,6 @@ This function performs classification, monotonicity testing, trend testing,
 slope testing, model fitting, and plotting of model-averaged curve.
 }
 \details{
-This function is \strong{internal} to the package and is used by
-\code{\link{bmdHigh}}.
+Internal function used by \code{\link{bmdHigh}}.
 }
 \keyword{internal}

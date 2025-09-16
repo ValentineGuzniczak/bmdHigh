@@ -13,15 +13,9 @@
 #'
 #' @keywords internal
 #'
-#' @examples
-#' bmdHigh:::classify_data(c(0, 1, 1, 0))
-#' bmdHigh:::classify_data(c(3, 5, 1999))
-#' bmdHigh:::classify_data(c(18.04, 8.04, 1.06, 4.01))
-#' bmdHigh:::classify_data(c("yes", "no", "yes"))
-#' bmdHigh:::classify_data(c("pink", "lightpink", "hotpink"))
 #'
 classify_data <- function(x) {
-  # Remove NAs safely
+  # Remove NAs
   x_no_na <- x[!is.na(x)]
 
   # If empty after removing NAs → unknown

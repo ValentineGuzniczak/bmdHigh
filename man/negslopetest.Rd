@@ -23,9 +23,4 @@ Fits a simple linear regression and checks whether the slope is negative.
 This function is \strong{internal} to the package and is used by
 \code{\link{bmdHigh}}.
 }
-\examples{
-df <- data.frame(Dose = c(1, 2, 3), responsevalue = c(10, 8, 5))
-bmdHigh:::negslopetest(data=df, response_col = "responsevalue", dose_col="Dose") # TRUE
-
-}
 \keyword{internal}
