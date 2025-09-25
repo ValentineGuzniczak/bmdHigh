@@ -14,7 +14,7 @@
 #'
 #' @importFrom grDevices recordPlot
 #' @importFrom graphics curve
-#' @importFrom bmd monotonicityTest trendTest MACurve
+#' @importFrom bmd monotonicityTest trendTest MACurve bmdMA
 #' @importFrom drc LL.4 W1.4 W2.4 LN.4
 #'
 #' @keywords internal
@@ -129,5 +129,81 @@ master <- function(
   )
   # --- Record and return plot---
   pl <- recordPlot()
-  list(models = results, plot = pl)
+
+  ## --- Model-averaged Benchmark Dose
+  bmd_est <- try(
+    bmd::bmdMA(modelList = results,
+               modelWeights = "AIC",
+               bmr = 0.1,
+               backgType = "modelBased",
+               def = "relative",
+               type = "bootstrap"),
+    silent = TRUE
+  )
+
+  if (!inherits(bmd_est, "try-error")) {
+    print("Model-averaged BMD succeeded.")
+  } else {
+    warning("Model-averaged BMD failed, checking individual BMDs.")
+
+    model_names <- names(results)
+    if (is.null(model_names) || any(model_names == "")) model_names <- paste0("model_", seq_along(results))
+
+    print("Testing each model with bmd() ")
+    ok <- logical(length(results))
+    for (i in seq_along(results)) {
+      nm <- model_names[i]
+      res_try <- try(
+        bmd::bmd(results[[i]],
+                 bmr = 0.1,
+                 backgType = "modelBased",
+                 def = "relative"),
+        silent = TRUE
+      )
+
+      if (inherits(res_try, "try-error")) {
+        err_msg <- as.character(res_try)[1]
+        print(sprintf("Model %s failed: %s", nm, err_msg))
+        ok[i] <- FALSE
+      } else {
+        print(sprintf("Model %s succeeded", nm))
+        ok[i] <- TRUE
+      }
+    }
+
+    valid_models <- results[ok]
+    print(paste("Valid BMDs found:", length(valid_models)))
+
+    if (length(valid_models) == 0) {
+      warning("No valid models remain after filtering.")
+      bmd_est <- NULL
+    } else {
+      print("Retrying model-averaged BMD with valid models")
+      bmd_est <- try(
+        bmd::bmdMA(modelList = valid_models,
+                   modelWeights = "AIC",
+                   bmr = 0.1,
+                   backgType = "modelBased",
+                   def = "relative",
+                   type = "bootstrap"),
+        silent = TRUE
+      )
+      if (inherits(bmd_est, "try-error")) {
+        warning("Second attempt at model-averaged BMD failed.")
+        bmd_est <- NULL
+      } else {
+        print("Model-averaged BMD succeeded on filtered models.")
+      }
+    }
+  }
+
+
+
+
+  ## --- Return models, plot, bmdMA ---
+  list(
+    models = results,
+    plot   = pl,
+    bmd    = bmd_est
+  )
 }

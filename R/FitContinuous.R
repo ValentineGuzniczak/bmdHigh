@@ -11,46 +11,49 @@
 #' @param negslope Logical. If TRUE, adds the \code{BC.5()} model for negative slopes.
 #'
 #' @importFrom stats as.formula
-#' @importFrom drc drm
-#' @importFrom drc LL.4 W1.4 W2.4 LN.4 BC.5 BC.4
-#'
+#' @importFrom drc drm LL.4 W1.4 W2.4 LN.4 BC.5 BC.4
 #' @return A named list of fitted models. Models that fail return \code{NULL}.
 #' @keywords internal
-continuousfit <- function(data,
-                          response_col = "responsevalue",
-                          dose_col = "Dose",
-                          models,
-                          negslope) {
-
+continuousfit <- function(
+    data,
+    response_col = "responsevalue",
+    dose_col     = "Dose",
+    models,
+    negslope
+) {
   # --- Input validation ---
   if (!all(c(response_col, dose_col) %in% colnames(data))) {
     stop("Data must contain columns: ", response_col, " and ", dose_col)
   }
 
-  # --- Add BC.5 model if slope is negative ---
-  if (isTRUE(negslope)) {
-    models <- append(models, list(drc::BC.5()))
-  }
-
   # --- Assign model names for clarity ---
   names(models) <- sapply(models, function(m) m$name)
+
+  # --- Drop BC.5 if negative slope not requested ---
+  if (!isTRUE(negslope)) {
+    models[["BC.5"]] <- NULL
+  }
+
+  #   necessary for bmdMA() to find in the formula
+  df <- data
+  names(df)[names(df) == dose_col] <- "Dose"
+  # same for response if you like
+  names(df)[names(df) == response_col] <- "Response"
 
   # --- Fit models ---
   fittedmodels <- list()
   for (model_name in names(models)) {
     model <- models[[model_name]]
-
     modelfit <- try(
       drm(
-        formula = as.formula(paste(response_col, "~", dose_col)),
-        data = data,
-        fct = model,
-        type = "continuous"
+        formula = Response ~ Dose,
+        data    = df,
+        fct     = model,
+        type    = "continuous"
       ),
       silent = TRUE
     )
 
-    # --- Save model or NULL ---
     if (inherits(modelfit, "try-error")) {
       warning(paste("Model failed for", model_name))
       fittedmodels[[model_name]] <- NULL

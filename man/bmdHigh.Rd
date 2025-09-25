@@ -45,6 +45,7 @@ monotonicity testing, trend testing, slope testing, model fitting, and plotting 
 \examples{
 
 # Example using S.alba.comp dataset from drcData
+#be aware of the extended running time
 library(drcData)
 data("S.alba.comp")
 

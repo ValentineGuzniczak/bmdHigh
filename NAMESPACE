@@ -2,6 +2,7 @@
 
 export(bmdHigh)
 importFrom(bmd,MACurve)
+importFrom(bmd,bmdMA)
 importFrom(bmd,monotonicityTest)
 importFrom(bmd,trendTest)
 importFrom(drc,BC.4)

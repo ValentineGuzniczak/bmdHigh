@@ -9,7 +9,7 @@
 #'
 #' @return A character string indicating the data type. + list of drc models
 #'
-#' @importFrom drc LL.4 W1.4 W2.4 LN.4 LL.3 W1.3 W2.3 LN.3 LL.2 W1.2 W2.2 LN.2
+#' @importFrom drc LL.4 W1.4 W2.4 LN.4 LL.3 W1.3 W2.3 LN.3 LL.2 W1.2 W2.2 LN.2 BC.4 BC.5
 #'
 #' @keywords internal
 #'
@@ -49,7 +49,7 @@ classify_data <- function(x) {
     }
 
     # Otherwise → continuous
-    models <- list(LL.4(), W1.4(), W2.4(), LN.4())
+    models <- list(LL.4(), W1.4(), W2.4(), LN.4(), BC.5())
     datatype <- "continuous"
     return(list(
       datatype = datatype,
