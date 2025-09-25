@@ -10,7 +10,7 @@
 bmdHigh performs model fitting and model-averaged benchmark dose estimation for high-throughput dose-response data.
 
 ##Installation
-```{r}
+```{r, eval: false}
 devtools::install_github("ValentineGuzniczak/bmdHigh")
 ```
 
