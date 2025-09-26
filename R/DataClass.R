@@ -20,7 +20,10 @@ classify_data <- function(x) {
 
   # If empty after removing NAs → unknown
   if (length(x_no_na) == 0) {
-    return("unknown (all NA)")
+    return(list(
+      datatype = "only NAs",
+      models   = NULL
+    ))
   }
 
   # Handle numeric variables

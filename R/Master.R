@@ -48,10 +48,15 @@ master <- function(
   datatype <- datainfo$datatype
   models   <- datainfo$models
 
+  if(datatype=="only NAs"){
+    warning("The subset only contains NAs - analysis stopped.")
+    return(NULL)
+  }
+
   # --- Monotonicity test ---
   mono <- try(bmd::monotonicityTest(dose, response, test = "jonckheere"), silent = TRUE)
   if (inherits(mono, "try-error")) {
-    warning("Monotonicity test failed - skipping subset.")
+    warning("Monotonicity test failed - analysis stopped.")
     return(NULL)
   }
   if (!isTRUE(mono$acceptMonotonicity)) {
